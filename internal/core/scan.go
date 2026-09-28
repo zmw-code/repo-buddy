@@ -17,7 +17,7 @@ import (
 )
 
 // SchemaVersion 是 --json 输出结构的版本号；v1.0 前该契约 unstable，
-// 每次调整都要同步 docs/json-contract.md 与这里的版本号（需求文档 10.1 / 18.5）。
+// 每次调整都要同步 docs/json-contract.md 与这里的版本号（需求文档 10.1）。
 const SchemaVersion = 1
 
 // ErrNotRepo 表示给定路径不在 Git 仓库内。
