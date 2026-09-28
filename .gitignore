@@ -1,0 +1,25 @@
+# Go
+*.exe
+*.exe~
+*.test
+*.out
+/vendor/
+
+# 构建产物
+/dist/
+/build/
+/bin/
+
+# 编辑器 / agent 噪音（与需求文档 S1 的噪音库保持一致，本项目自食其狗粮）
+.idea/
+.vscode/
+.claude/
+.cursor/
+.codex/
+.aider*
+.specstory/
+*.log
+
+# 系统
+.DS_Store
+Thumbs.db
