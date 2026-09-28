@@ -188,7 +188,7 @@ labels / topics / description / homepage —— 本地提交完顺手标掉，�
 ```
 repobuddy                     # 默认进 TUI
 repobuddy tui [path]          # 进 TUI
-repobuddy scan [path] --json  # 工作区扫描：未跟踪/已修改/已忽略 三类
+repobuddy scan [path] --json  # 工作区扫描：已暂存/已修改/未跟踪/已忽略 四类（2026-09-28 由三类增补，见 18.11）
 repobuddy ignore --suggest    # 输出候选规则 + 影响预览（N 文件 / X MB）
 repobuddy ignore --apply -r <规则>...   # 写入 .gitignore（可多选）
 repobuddy risk                # 敏感文件 + 大文件扫描
@@ -208,7 +208,7 @@ repobuddy setup --unregister  # 卸载右键菜单
 
 | 工具 | 入参 | 出参 |
 |---|---|---|
-| `repo_scan` | path | 未跟踪/已修改/已忽略 列表 |
+| `repo_scan` | path | 已暂存/已修改/未跟踪/已忽略 列表（同 10.1，2026-09-28 增补） |
 | `ignore_suggest` | path | 候选规则 + 每条的影响（文件数/体积） |
 | `ignore_apply` | path, rules[] | 写入结果 + 新 `.gitignore` 内容 |
 | `detect_risks` | path | 敏感文件列表 / 超大文件列表 |
@@ -222,12 +222,13 @@ repobuddy setup --unregister  # 卸载右键菜单
 ## 十一、功能分期
 
 ### MVP（目标：跑通一条完整链路；实现顺序 = 下列顺序：core 先行 → TUI 包壳 → setup/右键菜单最后）
-- [ ] `scan` 工作区扫描（三类分组）
+- [x] `scan` 工作区扫描（四类分组：已暂存/已修改/未跟踪/已忽略）—— 2026-09-28 完成（commit `a09727e`）：
+      人读 + `--json` 两种输出，5 个单元测试通过，契约见 `docs/json-contract.md`
 - [ ] `ignore --suggest / --apply`：候选规则 + 实时影响预览（增量语义）+ 写入 `.gitignore`（排除已有规则；应用后提示已跟踪文件不受影响，见 S1 实现要点）
 - [ ] `risk` 敏感文件 + 大文件拦截（提交前自动跑）
 - [ ] 勾选暂存 + 提交（消息手写）+ 推送
 - [ ] TUI 主界面（左侧双栏 + 右侧预览 + 顶栏状态 + 底栏快捷键）
-- [ ] `--json` 输出（接口契约）
+- [ ] `--json` 输出（接口契约）—— 2026-09-28：`scan --json` 已就绪（见 18.11），其余命令待补
 - [ ] `setup` 向导：检测 git/gh → 复用登录态 → 落 config → 注册右键菜单（**MVP 序列最后实现**，单个菜单项；MVP 中唯一涉及注册表、对核心差异化零贡献的模块，见风险 #3）
 
 ### v0.2
@@ -509,3 +510,16 @@ go build -trimpath -ldflags "-s -w" -o repobuddy.exe .
 - MVP 功能组成 —— 零增删，仅调顺序与标注（18.3）
 - CJK 对齐列为第一周验证 —— 原文已正确，不动
 - Go 版本示例（1.23.x）—— 16.2 本就要求装前查最新版，不改文档
+
+### 18.11 `scan` 输出由三类改为四类（2026-09-28 增补，需求实现反馈）
+
+| 原文 | `scan` 输出「未跟踪 / 已修改 / 已忽略 三类」（10.1、10.2、11） |
+| 修改后 | 「已暂存 / 已修改 / 未跟踪 / 已忽略 四类」（10.1、10.2、11） |
+
+理由：`git status --porcelain` 的两位状态码，**首列本来就是「index 有改动」与「仅工作区有改动」的区分**
+（`M ` vs ` M`）。按三类实现等于把这条信息丢掉，而 MVP 第 4 项（勾选暂存 + 提交）与 TUI 列表
+必须区分二者，丢掉就要在 TUI 阶段返工；「哪些已暂存」也正是提交流程第一步要展示的东西。
+
+性质：**增补，不是破坏性变更** —— 原有三类的口径与字段都不变，只多一个 `staged` 数组，
+`counts` 同步多一个字段；`ignored` 的折叠语义不变。JSON 契约仍为 `schema: 1`（unstable，见 18.5），
+分类口径的完整对照表写在 `docs/json-contract.md`。
