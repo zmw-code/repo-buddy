@@ -29,7 +29,9 @@ func RunCJKCheck(w io.Writer) int {
 			status = "FAIL"
 		}
 		add(1, bad)
-		fmt.Fprintf(w, "  %-12s 期望 %2d 实测 %2d  %-4s 样本=%s\n", label, want, got, status, sample)
+		// 列宽用 PadRight（按显示宽度）而非 fmt 的 %-12s（按字符个数）——
+		// 后者遇到中文标签会把整行推右，正是本自检要拦的错位。
+		fmt.Fprintf(w, "  %s期望 %2d 实测 %2d  %-4s 样本=%s\n", PadRight(label, 14), want, got, status, sample)
 	}
 
 	fmt.Fprintln(w, "repo-buddy 中文宽字符对齐自检（需求文档 风险 #1）")
@@ -37,7 +39,7 @@ func RunCJKCheck(w io.Writer) int {
 		runewidth.EastAsianWidth, map[bool]string{true: "2 列", false: "1 列"}[runewidth.EastAsianWidth])
 
 	// ── [1] 宽度模型 ────────────────────────────────────────────────
-	fmt.Fprintln(w, "[1] 显示宽度模型（DisplayWidth）")
+	fmt.Fprintln(w, "[1] 显示宽度模型（DisplayWidth；本报告的列宽也由它计算）")
 	widthCases := []struct {
 		label, sample string
 		want          int
@@ -54,9 +56,9 @@ func RunCJKCheck(w io.Writer) int {
 		check(c.label, c.sample, DisplayWidth(c.sample), c.want)
 	}
 	// Emoji 各家终端不一致，只报告不断言
-	fmt.Fprintf(w, "  %-12s 报告 %2d（不断言：各终端/字体不一）  样本=%s\n", "Emoji", DisplayWidth("🚀"), "🚀")
-	fmt.Fprintf(w, "  %-12s 报告 %2d（不断言：东亚歧义类，中文环境可能按 2 列渲染）  样本=%s\n\n",
-		"歧义字符", DisplayWidth("①±°→"), "①±°→")
+	fmt.Fprintf(w, "  %s报告 %2d（不断言：各终端/字体不一）  样本=%s\n", PadRight("Emoji", 14), DisplayWidth("🚀"), "🚀")
+	fmt.Fprintf(w, "  %s报告 %2d（不断言：东亚歧义类，中文环境可能按 2 列渲染）  样本=%s\n\n",
+		PadRight("歧义字符", 14), DisplayWidth("①±°→"), "①±°→")
 
 	// ── [2] 盒线闭合 ────────────────────────────────────────────────
 	fmt.Fprintln(w, "[2] 盒线闭合（Lipgloss 渲染后每行显示宽度必须相等）")
