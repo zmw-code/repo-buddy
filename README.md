@@ -15,9 +15,17 @@
 
 ## 状态
 
-`v0.0.1-dev` — 骨架已就位：子命令分发（`cmd/`）+ 中文宽字符对齐自检（通过），
-MVP 功能（`scan` / `ignore` / `risk` / 提交推送 / TUI）尚未开始。
+`v0.0.1-dev` — 骨架已就位：子命令分发（`cmd/`）+ `scan` 工作区扫描 + 中文宽字符对齐自检（通过）；
+MVP 其余功能（`ignore` / `risk` / 提交推送 / TUI / `setup`）尚未开始。
 远端仓库：[zmw-code/repo-buddy](https://github.com/zmw-code/repo-buddy)
+
+## 用法
+
+```powershell
+go run . scan              # 工作区扫描：已暂存 / 已修改 / 未跟踪 / 已忽略
+go run . scan --json       # 同上，机器可读（结构见 docs/json-contract.md）
+go run . cjk-check         # 中文宽字符对齐自检（需求文档 风险 #1）
+```
 
 ## 构建
 

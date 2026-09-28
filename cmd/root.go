@@ -23,9 +23,11 @@ func Dispatch(args []string, stdout, stderr io.Writer) int {
 		fmt.Fprintf(stdout, "repo-buddy %s\n", Version)
 	case "help", "--help", "-h":
 		fmt.Fprintln(stdout, Usage)
+	case "scan":
+		return Scan(args[1:], stdout, stderr)
 	case "cjk-check":
 		return CjkCheck(args[1:], stdout)
-	case "scan", "ignore", "risk", "commit", "meta", "status", "serve-mcp", "setup", "tui":
+	case "ignore", "risk", "commit", "meta", "status", "serve-mcp", "setup", "tui":
 		// 对应需求文档 10.1 节的接口契约，逐个实现
 		fmt.Fprintf(stdout, "[%s] 尚未实现 —— 契约见需求文档 10.1 节\n", args[0])
 	default:
