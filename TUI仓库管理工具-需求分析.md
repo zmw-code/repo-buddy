@@ -306,9 +306,12 @@ repobuddy setup --unregister  # 卸载右键菜单
 | git 2.47.1（凭据复用 gh） | ✅ |
 | gh 2.99.0（已登录 zmw-code） | ✅ |
 | Windows Terminal 1.24 / 长路径已开 | ✅ |
-| **Go** | ❌ 未安装 |
-| **GOPROXY** | ❌ 为空（国内不配则依赖拉不动） |
+| **Go** | ✅ go1.27.1（`C:\Program Files\Go`，2026-09-28 实测；原记「未安装」已过时） |
+| **GOPROXY** | ✅ `https://goproxy.cn,direct`（2026-09-28 实测） |
 | PowerShell | 仅 5.1（脚本不能用 `??`/三元） |
+
+> 2026-09-28 更新：上表 Go 与 GOPROXY 两行原为「未安装 / 为空」，实测已就绪，
+> 故 16.2 的安装步骤对当前机器已无需执行（保留作他人环境参考）。
 
 ### 16.2 安装 Go（二选一）
 
@@ -403,11 +406,15 @@ go build -trimpath -ldflags "-s -w" -o repobuddy.exe .
 
 ### 17.5 首次发布 checklist
 
-- [ ] 装 Go + 配 GOPROXY（16.2）
-- [ ] `go run . version` 通过（16.3）
-- [ ] **中文宽字符对齐验证 demo**（风险 #1，第一周必做）
-- [ ] `gh repo create repo-buddy --public --source . --push`
-- [ ] 加 LICENSE（建议 MIT，与 easy_clean 对齐）+ 首个 commit
+- [x] 装 Go + 配 GOPROXY（16.2）—— 2026-09-28 实测：go1.27.1 + `goproxy.cn`
+- [x] `go run . version` 通过（16.3）—— 输出 `repo-buddy 0.0.1-dev`
+- [x] **中文宽字符对齐验证 demo**（风险 #1，第一周必做）—— `repobuddy cjk-check`
+      （自动断言 11 项：宽度模型 / 盒线闭合 / 表格列对齐 / 按宽度截断；终端与字体的
+      目视确认在该命令第 4 节，换字体或字号后需人工重跑一次）
+- [x] `gh repo create repo-buddy --public --source . --push`
+      —— https://github.com/zmw-code/repo-buddy （2026-09-28）
+- [x] 加 LICENSE（建议 MIT，与 easy_clean 对齐）+ 首个 commit
+      —— MIT（`LICENSE`）；首个 commit `00c09ce`
 
 ---
 

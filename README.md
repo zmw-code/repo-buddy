@@ -15,13 +15,24 @@
 
 ## 状态
 
-`v0.0.1-dev` — 骨架阶段，接口契约已在需求文档第 10 节定稿，实现尚未开始。
+`v0.0.1-dev` — 骨架已就位：子命令分发（`cmd/`）+ 中文宽字符对齐自检（通过），
+MVP 功能（`scan` / `ignore` / `risk` / 提交推送 / TUI）尚未开始。
+远端仓库：[zmw-code/repo-buddy](https://github.com/zmw-code/repo-buddy)
 
 ## 构建
 
 ```powershell
 go build -trimpath -ldflags "-s -w" -o repobuddy.exe .
 ```
+
+## 自检
+
+```powershell
+go run . cjk-check    # 中文宽字符对齐自检（需求文档 风险 #1）
+```
+
+输出 11 项自动断言（宽度模型 / 盒线闭合 / 表格列对齐 / 按宽度截断）+ 一节供人眼确认的
+目视材料；换字体、改字号或缩放窗口后建议重跑。退出码 0 = 通过。
 
 ## 设计底线（不可妥协）
 
@@ -32,4 +43,4 @@ go build -trimpath -ldflags "-s -w" -o repobuddy.exe .
 
 ## 协议
 
-暂未定（建议 MIT，见需求文档 17.5 节 checklist）。
+MIT，见 [LICENSE](./LICENSE)。
